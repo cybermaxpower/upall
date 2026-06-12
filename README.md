@@ -1,4 +1,4 @@
-# Linux-updator 🚀 (`upall`)
+# Linux-updater 🚀 (`upall`)
 
 > **`upall`** is an intelligent, multi-distribution system updater script for Linux. It automatically adapts to your operating system, core package manager, and installed containerized platforms to update your entire machine with a single command.
 
