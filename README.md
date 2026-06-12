@@ -3,7 +3,10 @@
 > **`upall`** is an intelligent, multi-distribution system updater script for Linux. It automatically adapts to your operating system, core package manager, and installed containerized platforms to update your entire machine with a single command.
 
 
----
+<p align="center">
+  <img src="screenshot.png" width="600" alt="Script Screenshot">
+</p>
+
 
 
 ## 🌟 Overview
