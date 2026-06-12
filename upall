@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# Clear the screen for a professional start
+clear
+
+# ==========================================
+# 1. DETECT OPERATING SYSTEM / PACKAGER
+# ==========================================
+# We check which package manager is available to determine the OS base.
+if command -v apt &> /dev/null; then
+    PKG_MANAGER="apt"
+elif command -v pacman &> /dev/null; then
+    PKG_MANAGER="pacman"
+else
+    PKG_MANAGER="unknown"
+fi
+
+# ==========================================
+# 2. SYSTEM UPDATES
+# ==========================================
+echo -e "╔═════════════════════════════════════════════════════╗"
+echo -e "║        \e[32mStarting Full System Update...\e[0m               ║"
+echo -e "╚═════════════════════════════════════════════════════╝"
+echo -e "\n"
+
+# Run the appropriate update command based on the detected package manager
+if [ "$PKG_MANAGER" = "apt" ]; then
+    echo -e "\e[32m[DETECTED]\e[0m Debian/Ubuntu-based system."
+    echo -e "\n"
+    # 'apt update' refreshes package lists; 'apt full-upgrade' upgrades packages and handles changing dependencies
+    sudo apt update && sudo apt full-upgrade -y
+
+elif [ "$PKG_MANAGER" = "pacman" ]; then
+    echo -e "\e[32m[DETECTED]\e[0m Arch-based system."
+    echo -e "\n"
+    
+    # Check for AUR helpers (yay or paru) which are common on Arch/Manjaro
+    if command -v yay &> /dev/null; then
+        echo -e "\e[34m[AUR]\e[0m Updating with yay..."
+        echo -e "\n"        
+        yay -Syu --noconfirm
+    elif command -v paru &> /dev/null; then
+        echo -e "\e[34m[AUR]\e[0m Updating with paru..."
+        echo -e "\n"
+        paru -Syu --noconfirm
+    else
+        # Fallback to standard pacman if no AUR helper is found
+        # '-Syu' synchronizes databases, refreshes package lists, and upgrades the system
+        sudo pacman -Syu --noconfirm
+    fi
+else
+    echo -e "\e[31m[WARNING]\e[0m No supported core package manager (APT or Pacman) found."
+fi
+
+echo -e "\n"
+
+# ==========================================
+# 3. SNAP UPDATES (Conditional)
+# ==========================================
+# The header and commands will now ONLY trigger if the 'snap' command actually exists.
+if command -v snap &> /dev/null; then
+    echo -e "╔═════════════════════════════════════════════════════╗"
+    echo -e "║                 \e[34mRefreshing Snaps...\e[0m                 ║"
+    echo -e "╚═════════════════════════════════════════════════════╝"
+    echo -e "\n"
+    
+    # Refreshes (updates) all installed snap packages
+    sudo snap refresh
+    echo -e "\n"
+fi
+
+# ==========================================
+# 4. FLATPAK UPDATES (Conditional)
+# ==========================================
+# The header and commands will now ONLY trigger if the 'flatpak' command actually exists.
+if command -v flatpak &> /dev/null; then
+    echo -e "╔═════════════════════════════════════════════════════╗"
+    echo -e "║                \e[35mUpdating Flatpaks...\e[0m                 ║"
+    echo -e "╚═════════════════════════════════════════════════════╝"
+    echo -e "\n"
+    
+    # Updates all flatpaks. 
+    # '2>&1' merges errors into standard output so grep can filter out annoying End-of-Life (EOL) warnings.
+    flatpak update -y 2>&1 | grep -vE "end-of-life|receiving fixes|applications using|extension:"
+
+    # Automatically removes any leftover Flatpak runtimes or libraries that are no longer needed.
+    # '> /dev/null 2>&1' keeps this step completely silent.
+    flatpak uninstall --unused -y > /dev/null 2>&1
+    echo -e "\n"
+fi
+
+# ==========================================
+# 5. FINISH
+# ==========================================
+# Final success message indicating the script has successfully reached the end.
+echo -e "╔═════════════════════════════════════════════════════╗"
+echo -e "║               \e[32mALL UPDATES COMPLETE!\e[0m                 ║"
+echo -e "╚═════════════════════════════════════════════════════╝"
+echo -e "\n"
