@@ -94,6 +94,6 @@ fi
 # ==========================================
 # Final success message indicating the script has successfully reached the end.
 echo -e "╔═════════════════════════════════════════════════════╗"
-echo -e "║               \e[32mALL UPDATES COMPLETE!\e[0m                 ║"
+echo -e "║               \e[32mALL UPDATES COMPLETE!\e[0m                ║"
 echo -e "╚═════════════════════════════════════════════════════╝"
 echo -e "\n"
