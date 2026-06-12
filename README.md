@@ -57,13 +57,13 @@ curl -sL [https://raw.githubusercontent.com/cybermaxpower/linux-updator/main/ins
 If you prefer to download the installer file first, run these commands:
 
 ``` Bash
- 1. Download the installer script
+ # 1. Download the installer script
 curl -O [https://raw.githubusercontent.com/cybermaxpower/linux-updator/main/install.sh](https://raw.githubusercontent.com/cybermaxpower/linux-updator/main/install.sh)
 
- 2. Make the installer executable
+# 2. Make the installer executable
 chmod +x install.sh
 
- 3. Run the installer
+# 3. Run the installer
 ./install.sh
 ```
 
