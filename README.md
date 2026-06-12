@@ -15,6 +15,20 @@ While this project is named **Linux-updator** on GitHub, it installs a global te
 
 Instead of manually running multiple update commands for your system packages, Flatpaks, and Snaps, you just type `upall` and let the script handle the heavy lifting safely and cleanly.
 
+---
+
+## 💡 Why This Project Exists
+
+I created **`upall`** because keeping a modern Linux system updated can be annoying. 
+
+Today, a single computer often uses **different package ecosystems** at the same time. To fully update your system, you usually have to remember and type several separate commands:
+- `sudo apt update && sudo apt upgrade` (for system packages)
+- `sudo snap refresh` (for Snap applications)
+- `flatpak update` (for Flatpak applications)
+
+I wanted a **single, universal command** that could handle everything for me. 
+
+This script does the remembering for you. It scans your system, finds what needs updating, and runs all the correct commands in order. It saves time and ensures your machine is always completely secure with just one word: `upall`.
 
 ---
 
