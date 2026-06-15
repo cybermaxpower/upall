@@ -51,7 +51,7 @@ GITHUB_USER="YOUR_GITHUB_USERNAME"
 if command -v curl &> /dev/null && [ "$GITHUB_USER" != "YOUR_GITHUB_USERNAME" ]; then
     echo -e "\e[34m[DOWNLOADING]\e[0m Fetching latest 'upall' from GitHub..."
     # Downloads directly to the system binary folder
-    sudo curl -s -L "https://raw.githubusercontent.com/${GITHUB_USER}/Linux-updator/main/upall" -o /usr/local/bin/upall
+    sudo curl -s -L "https://raw.githubusercontent.com/${GITHUB_USER}/upall/main/upall" -o /usr/local/bin/upall
 else
     # Fallback: If GitHub isn't configured yet, copy the local file just like your original script
     echo -e "\e[33m[LOCAL COPY]\e[0m Using local 'upall' file..."
