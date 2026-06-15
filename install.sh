@@ -44,8 +44,8 @@ echo -e "\n"
 echo "Installing 'upall' update script to your system folder..."
 echo "--------------------------------------------------------"
 
-# CHANGE THIS: Replace 'YOUR_GITHUB_USERNAME' with your actual GitHub username!
-GITHUB_USER="YOUR_GITHUB_USERNAME"
+# Configured with your actual GitHub username
+GITHUB_USER="cybermaxpower"
 
 # Check if we can download it fresh from GitHub
 if command -v curl &> /dev/null && [ "$GITHUB_USER" != "YOUR_GITHUB_USERNAME" ]; then
@@ -53,7 +53,7 @@ if command -v curl &> /dev/null && [ "$GITHUB_USER" != "YOUR_GITHUB_USERNAME" ];
     # Downloads directly to the system binary folder
     sudo curl -s -L "https://raw.githubusercontent.com/${GITHUB_USER}/upall/main/upall" -o /usr/local/bin/upall
 else
-    # Fallback: If GitHub isn't configured yet, copy the local file just like your original script
+    # Fallback: If GitHub isn't configured yet, copy the local file
     echo -e "\e[33m[LOCAL COPY]\e[0m Using local 'upall' file..."
     if [ -f "./upall" ]; then
         sudo cp upall /usr/local/bin/upall
