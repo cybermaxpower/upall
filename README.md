@@ -37,7 +37,7 @@ curl -sL https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh |
 If you prefer to download the installer file first, run these commands:
 ```bash
 # 1. Download the installer script
-curl -O [https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh](https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh)
+curl https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh
 
 # 2. Make the installer executable
 chmod +x install.sh
