@@ -68,10 +68,11 @@ fi
 echo -e "\n"
 
 # ==========================================
-# 3. SNAP UPDATES (Conditional)
+# 3. SNAP UPDATES (Conditional & Silent)
 # ==========================================
-# The header and commands will now ONLY trigger if the 'snap' command actually exists.
-if command -v snap &> /dev/null; then
+# This checks if snap is installed AND if the snap background service is actively running.
+# This prevents scary connection errors on systems like BigLinux.
+if command -v snap &> /dev/null && systemctl is-active --quiet snapd; then
     echo -e "╔═════════════════════════════════════════════════════╗"
     echo -e "║                 \e[34mRefreshing Snaps...\e[0m                 ║"
     echo -e "╚═════════════════════════════════════════════════════╝"
