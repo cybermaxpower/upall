@@ -32,7 +32,7 @@ fi
 # 2. SYSTEM UPDATES
 # ==========================================
 echo -e "╔═════════════════════════════════════════════════════╗"
-echo -e "║        \e[32mStarting Full System Update...\e[0m                ║"
+echo -e "║        \e[32mStarting Full System Update...\e[0m               ║"
 echo -e "╚═════════════════════════════════════════════════════╝"
 echo -e "\n"
 
@@ -73,7 +73,7 @@ echo -e "\n"
 # The header and commands will now ONLY trigger if the 'snap' command actually exists.
 if command -v snap &> /dev/null; then
     echo -e "╔═════════════════════════════════════════════════════╗"
-    echo -e "║                 \e[34mRefreshing Snaps...\e[0m                  ║"
+    echo -e "║                 \e[34mRefreshing Snaps...\e[0m                 ║"
     echo -e "╚═════════════════════════════════════════════════════╝"
     echo -e "\n"
     
@@ -88,7 +88,7 @@ fi
 # The header and commands will now ONLY trigger if the 'flatpak' command actually exists.
 if command -v flatpak &> /dev/null; then
     echo -e "╔═════════════════════════════════════════════════════╗"
-    echo -e "║                \e[35mUpdating Flatpaks...\e[0m                  ║"
+    echo -e "║                \e[35mUpdating Flatpaks...\e[0m                 ║"
     echo -e "╚═════════════════════════════════════════════════════╝"
     echo -e "\n"
     
@@ -107,6 +107,6 @@ fi
 # ==========================================
 # Final success message indicating the script has successfully reached the end.
 echo -e "╔═════════════════════════════════════════════════════╗"
-echo -e "║               \e[32mALL UPDATES COMPLETE!\e[0m                  ║"
+echo -e "║               \e[32mALL UPDATES COMPLETE!\e[0m                 ║"
 echo -e "╚═════════════════════════════════════════════════════╝"
 echo -e "\n"
