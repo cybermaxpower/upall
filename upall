@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# Clear the screen for a professional start
+# upall  
+
 clear
 
 # ==========================================
 # 1. DETECT TRUE OS BASE
 # ==========================================
-# We read the system's official OS identity file instead of just checking commands.
-# This prevents wrappers (like pamac acting as apt in BigLinux) from tricking the script.
 if [ -f /etc/os-release ]; then
-    # Search the system file for "arch" or other Arch-based names (case-insensitive)
-    if grep -qi -e "arch" -e "biglinux" -e "manjaro" /etc/os-release; then
+    # Search the entire file for the word "arch" (catches ID=arch and ID_LIKE=arch)
+    if grep -qi "arch" /etc/os-release; then
         OS_TYPE="arch"
-    elif grep -qi -e "debian" -e "ubuntu" -e "mint" /etc/os-release; then
+    # Search the entire file for "debian" or "ubuntu" (catches Mint, Pop!_OS, etc.)
+    elif grep -qi -e "debian" -e "ubuntu" /etc/os-release; then
         OS_TYPE="debian"
     else
         OS_TYPE="unknown"
@@ -44,7 +44,7 @@ if [ "$OS_TYPE" = "debian" ]; then
     sudo apt update && sudo apt full-upgrade -y
 
 elif [ "$OS_TYPE" = "arch" ]; then
-    echo -e "\e[32m[DETECTED]\e[0m Arch-based system (BigLinux)."
+    echo -e "\e[32m[DETECTED]\e[0m Arch-based system."
     echo -e "\n"
     
     # Check for AUR helpers (yay or paru) which are common on Arch/Manjaro/BigLinux
