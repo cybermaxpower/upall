@@ -1,8 +1,20 @@
 #!/bin/bash
 
-# upall  
+# ==============================================================================
+# Script Name:  upall
+# Description:  Automated universal system updater for Linux. Automatically
+#               detects the OS base (Debian/Ubuntu or Arch) and safely handles
+#               APT, Pacman/AUR, Snap, and Flatpak updates with built-in checks.
+# Author:       Matt / https://github.com/cybermaxpower/
+# License:      MIT License 
+# Version:      1.2.0
+# Date:         2026-06-26
+# ==============================================================================
 
-clear
+
+# Clear the screen for a professional start  
+clear 
+
 
 # ==========================================
 # 1. DETECT TRUE OS BASE
