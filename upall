@@ -7,7 +7,7 @@
 #               APT, Pacman/AUR, Snap, and Flatpak updates with built-in checks.
 # Author:       Matt / https://github.com/cybermaxpower/
 # License:      MIT License 
-# Version:      1.2.0
+# Version:      1.2.1
 # Date:         2026-06-26
 # ==============================================================================
 
@@ -15,29 +15,19 @@
 # Clear the screen for a professional start  
 clear 
 
-
 # ==========================================
-# 1. DETECT TRUE OS BASE
+# 1. DETECT OPERATING SYSTEM / PACKAGER
 # ==========================================
-if [ -f /etc/os-release ]; then
-    # Search the entire file for the word "arch" (catches ID=arch and ID_LIKE=arch)
-    if grep -qi "arch" /etc/os-release; then
-        OS_TYPE="arch"
-    # Search the entire file for "debian" or "ubuntu" (catches Mint, Pop!_OS, etc.)
-    elif grep -qi -e "debian" -e "ubuntu" /etc/os-release; then
-        OS_TYPE="debian"
-    else
-        OS_TYPE="unknown"
-    fi
+# We check which package manager is available to determine the OS base.
+if command -v apt &> /dev/null; then
+    PKG_MANAGER="apt"
+elif command -v pacman &> /dev/null; then
+    PKG_MANAGER="pacman"
 else
-    # Fallback check if /etc/os-release is somehow missing
-    if command -v pacman &> /dev/null; then
-        OS_TYPE="arch"
-    elif command -v apt &> /dev/null; then
-        OS_TYPE="debian"
-    else
-        OS_TYPE="unknown"
-    fi
+    # If neither is found, print a clear error and halt everything immediately
+    echo -e "\e[31m[CRITICAL ERROR]\e[0m No supported package manager (APT or Pacman) found."
+    echo -e "This script is not compatible with your operating system. Exiting safely."
+    exit 1
 fi
 
 # ==========================================
@@ -48,36 +38,28 @@ echo -e "║        \e[32mStarting Full System Update...\e[0m               ║"
 echo -e "╚═════════════════════════════════════════════════════╝"
 echo -e "\n"
 
-# Run the appropriate update command based on the detected OS_TYPE
-if [ "$OS_TYPE" = "debian" ]; then
+# Because of the 'exit 1' above, we are 100% guaranteed to only be on APT or Pacman here
+if [ "$PKG_MANAGER" = "apt" ]; then
     echo -e "\e[32m[DETECTED]\e[0m Debian/Ubuntu-based system."
-    echo -e "\n"
-    # 'apt update' refreshes package lists; 'apt full-upgrade' upgrades packages and handles changing dependencies
     sudo apt update && sudo apt full-upgrade -y
 
-elif [ "$OS_TYPE" = "arch" ]; then
+elif [ "$PKG_MANAGER" = "pacman" ]; then
     echo -e "\e[32m[DETECTED]\e[0m Arch-based system."
-    echo -e "\n"
     
-    # Check for AUR helpers (yay or paru) which are common on Arch/Manjaro/BigLinux
     if command -v yay &> /dev/null; then
         echo -e "\e[34m[AUR]\e[0m Updating with yay..."
-        echo -e "\n"        
         yay -Syu --noconfirm
     elif command -v paru &> /dev/null; then
         echo -e "\e[34m[AUR]\e[0m Updating with paru..."
-        echo -e "\n"
         paru -Syu --noconfirm
     else
-        # Fallback to standard pacman if no AUR helper is found
-        # '-Syu' synchronizes databases, refreshes package lists, and upgrades the system
         sudo pacman -Syu --noconfirm
     fi
-else
-    echo -e "\e[31m[WARNING]\e[0m No supported core package manager (APT or Pacman) found."
 fi
 
 echo -e "\n"
+
+
 
 # ==========================================
 # 3. SNAP UPDATES (Conditional & Silent)
