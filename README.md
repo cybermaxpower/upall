@@ -55,18 +55,32 @@ Open your terminal from anywhere on your system and simply type:
 upall
 
 ```
-### 🔒 Why It Asks for Your Password (sudo)
-When the script starts, you will see a standard [sudo] password prompt.
- * **It is completely safe.**
- * Your system requires **administrator privileges (sudo)** to safely download, install, and replace core system files.
- * You only need to type your password **once** at the beginning. The script will remember it until all updates are finished.
- 
-### What to Expect When Run:
+
+## What to Expect When Run:
  * **Screen Refresh:** The script starts by clearing your terminal view for a clprofessionalional workspace.
  * **Privilege Elevation:** You will see the secure password prompt required so your core system package managers can look for updates safely.
  * **Environment Sync:** A banner will output telling you exactly what type of machine it detected (e.g., [DETECTED] Arch-based system).
  * **Sequential Processing:** It runs through your core system updates first, then smoothly moves on to Snaps and Flatpaks *only* if they are active on your computer.
  * **Completion Graphic:** A prominent success block drops down at the very end to signal your entire machine is fully updated and secure.
 
+## 🔒 Why It Asks for Your Password (sudo)
+When the script starts, you will see a standard [sudo] password prompt.
+ * **It is completely safe.**
+ * Your system requires **administrator privileges (sudo)** to safely download, install, and replace core system files.
+ * You only need to type your password **once** at the beginning. The script will remember it until all updates are finished.
+ 
 
 ---
+
+## ⚖️ Warranty & Liability Disclaimer
+NO WARRANTY (PROVIDED "AS IS")
+This software is provided completely "as is" without any warranty of any kind, either expressed or implied.
+
+LIMITATION OF LIABILITY
+Use at Your Own Risk: The developer is not liable for any damage, data loss, or system issues that may occur on your computer from installing, running, or uninstalling software using this tool.
+User Responsibility: Uninstalling application containers can permanently delete local user configurations, settings, or saved files linked to those specific apps. It is your absolute responsibility to verify what you are deleting before confirming.
+
+
+
+
+
