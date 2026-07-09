@@ -73,12 +73,13 @@ When the script starts, you will see a standard [sudo] password prompt.
 ---
 
 ## ⚖️ Warranty & Liability Disclaimer
-NO WARRANTY (PROVIDED "AS IS")
-This software is provided completely "as is" without any warranty of any kind, either expressed or implied.
 
-LIMITATION OF LIABILITY
-Use at Your Own Risk: The developer is not liable for any damage, data loss, or system issues that may occur on your computer from installing, running, or uninstalling software using this tool.
-User Responsibility: Uninstalling application containers can permanently delete local user configurations, settings, or saved files linked to those specific apps. It is your absolute responsibility to verify what you are deleting before confirming.
+### NO WARRANTY (PROVIDED "AS IS")
+This software is provided completely **"as is"** without any warranty of any kind, either expressed or implied. 
+
+### Limitation of Liability
+* **Use at Your Own Risk:** The developer is not liable for any system instability, package conflicts, data loss, or system issues that may occur on your computer from installing, running, or updating software using this tool. 
+* **User Responsibility:** Automatic cleanups (such as removing unused Flatpak runtimes) can modify local configurations or environment setups linked to those packages. It is your absolute responsibility to inspect the script, review what is being changed or deleted, and maintain your own system backups before executing updates.
 
 
 
