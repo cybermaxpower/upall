@@ -7,13 +7,19 @@
 #               APT, Pacman/AUR, Snap, and Flatpak updates with built-in checks.
 # Author:       Matt / https://github.com/cybermaxpower/
 # License:      MIT License 
-# Version:      1.2.1
-# Date:         2026-06-26
+# Version:      1.4.0
+# Date:         2026-07-11
 # ==============================================================================
 
 
 # Clear the screen for a professional start  
 clear 
+
+# Cache sudo credentials upfront and keep them alive in the background
+# This ensures long updates don't timeout and halt the script mid-way.
+echo -e "\e[34m[INIT]\e[0m Requesting administrative privileges..."
+sudo -v
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 # ==========================================
 # 1. DETECT OPERATING SYSTEM / PACKAGER
@@ -42,6 +48,10 @@ echo -e "\n"
 if [ "$PKG_MANAGER" = "apt" ]; then
     echo -e "\e[32m[DETECTED]\e[0m Debian/Ubuntu-based system."
     sudo apt update && sudo apt full-upgrade -y
+    
+    # APT Housekeeping: Clean up unused packages, old kernels, and local cache archives
+    echo -e "\e[34m[MAINTENANCE]\e[0m Cleaning up orphaned packages and package cache..."
+    sudo apt autoremove -y && sudo apt clean
 
 elif [ "$PKG_MANAGER" = "pacman" ]; then
     echo -e "\e[32m[DETECTED]\e[0m Arch-based system."
@@ -60,12 +70,11 @@ fi
 echo -e "\n"
 
 
-
 # ==========================================
 # 3. SNAP UPDATES (Conditional & Silent)
 # ==========================================
 # This checks if snap is installed AND if the snap background service is actively running.
-# This prevents scary connection errors on systems like BigLinux.
+# This prevents connection errors on certain distributions.
 if command -v snap &> /dev/null && systemctl is-active --quiet snapd; then
     echo -e "╔═════════════════════════════════════════════════════╗"
     echo -e "║                 \e[34mRefreshing Snaps...\e[0m                 ║"
@@ -88,8 +97,9 @@ if command -v flatpak &> /dev/null; then
     echo -e "\n"
     
     # Updates all flatpaks. 
-    # '2>&1' merges errors into standard output so grep can filter out annoying End-of-Life (EOL) warnings.
-    flatpak update -y 2>&1 | grep -vE "end-of-life|receiving fixes|applications using|extension:"
+    # 'col -b' processes backspaces/carriage returns to prevent a broken cascading text layout.
+    # '2>&1' allows grep to filter out annoying End-of-Life (EOL) warnings from the full output.
+    flatpak update -y 2>&1 | col -b | grep -vE "end-of-life|receiving fixes|applications using|extension:"
 
     # Automatically removes any leftover Flatpak runtimes or libraries that are no longer needed.
     # '> /dev/null 2>&1' keeps this step completely silent.
@@ -100,6 +110,11 @@ fi
 # ==========================================
 # 5. FINISH
 # ==========================================
+# Send a desktop notification if a desktop notification engine is available
+if command -v notify-send &> /dev/null; then
+    notify-send "System Update Complete" "All APT, Flatpak, and Snap updates finished successfully!" --icon=system-software-update 2>/dev/null
+fi
+
 # Final success message indicating the script has successfully reached the end.
 echo -e "╔═════════════════════════════════════════════════════╗"
 echo -e "║               \e[32mALL UPDATES COMPLETE!\e[0m                 ║"
