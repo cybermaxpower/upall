@@ -12,6 +12,7 @@
 
 * ​One Command: Just type upall and walk away.
 * ​Comprehensive Updates: Covers system package managers, Flatpaks, and Snaps in one run.
+
 *​ Safe Execution: Designed to perform updates cleanly without cluttering your shell output..
 
 ## 💡 Why This Project Exists
