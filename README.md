@@ -14,7 +14,7 @@
 
 * ​Comprehensive Updates: Covers system package managers, Flatpaks, and Snaps in one run.
 
-*​Safe Execution: Designed to perform updates cleanly without cluttering your shell output..
+*​ Safe Execution: Designed to perform updates cleanly without cluttering your shell output..
 
 ## 💡 Why This Project Exists
 I created **upall** because keeping a modern Linux system updated can be annoying.
