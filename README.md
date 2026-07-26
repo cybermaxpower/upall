@@ -11,9 +11,7 @@
 ​Updating system packages, Flatpaks, and Snaps one by one is repetitive. upall fixes that by providing a single, global terminal command to keep your entire Linux ecosystem up to date—safely, cleanly, and without hassle.
 
 * ​One Command: Just type upall and walk away.
-
 * ​Comprehensive Updates: Covers system package managers, Flatpaks, and Snaps in one run.
-
 *​ Safe Execution: Designed to perform updates cleanly without cluttering your shell output..
 
 ## 💡 Why This Project Exists
