@@ -7,8 +7,7 @@ echo "╔═══════════════════════�
 echo "║                Lazy Installer: upall                ║"
 echo "╚═════════════════════════════════════════════════════╝"
 echo -e "\n"
-
-# ==========================================
+ 
 # 1. DETECT SYSTEM & CHOOSE INSTALL METHOD
 # ==========================================
 # Detect if the system is Debian/Ubuntu-based or Arch-based
@@ -23,7 +22,7 @@ else
     echo -e "\e[31m[WARNING]\e[0m Unknown system base. Will attempt a local file copy."
 fi
 
-# ==========================================
+
 # 2. ENSURE CURL IS INSTALLED (For GitHub Download)
 # ==========================================
 # If we know the package manager and 'curl' is missing, install it automatically
@@ -38,7 +37,7 @@ fi
 
 echo -e "\n"
 
-# ==========================================
+
 # 3. DEPLOYING THE SCRIPT
 # ==========================================
 echo "Installing 'upall' update script to your system folder..."
@@ -62,8 +61,7 @@ else
         exit 1
     fi
 fi
-
-# ==========================================
+ 
 # 4. SET PERMISSIONS & FINISH
 # ==========================================
 # Make the script executable
