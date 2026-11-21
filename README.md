@@ -29,6 +29,24 @@ This script does the remembering for you. It detects the supported package manag
  * **Clean & Beautiful Interface:** Formatted with custom ASCII box boundaries, color coding, and terminal spacing so you can easily track update progress.
  * **Desktop Notification:** Sends a completion notification if `notify-send` is available.
 
+## 📋 Prerequisites
+
+`curl` is required for both installation methods to download the installer from GitHub.
+
+If `curl` is not already installed, install it using your distribution's package manager.
+
+**Debian-based systems:**
+
+```bash
+sudo apt update
+sudo apt install curl -y
+```
+
+Once `curl` is installed, proceed with either installation method below.
+
+
+Once installed, continue with the installation instructions below.
+
 ## 🚀 How to Install Using the Lazy Installer script (Recommended)
 The easiest way to install upall globally on your system is to use the lazy installer script. This will automatically check your OS, install dependencies like `curl` if they are missing, download upall, and make it usable from anywhere.
 ### Option A: The One-Line Express Installation
@@ -50,24 +68,28 @@ chmod +x install.sh
 ./install.sh
 ```
 
-## 📋 Prerequisites
-
-Before installing upall, make sure `curl` is installed. It is required to download the installer.
-
-If `curl` is missing, install it using your distribution's package manager.
-
-**Debian-based systems:**
-```bash
-sudo apt update
-sudo apt install curl -y
-```
-
 Once installed, proceed with the installation instructions below.
 
 
 
 ## 💻 How to Use upall in the Terminal
 Once installed, using the application is incredibly straightforward. It acts just like a native system command.
+
+### Prerequisite: curl
+
+The one-line installation command requires `curl` to download the installer.
+
+If `curl` is not installed on your system, install it first using your distribution's package manager.
+
+**Debian/Ubuntu-based systems:**
+
+```bash
+sudo apt update
+sudo apt install curl -y
+```
+
+Once installed, continue with the installation instructions below.
+
 ### Running the App
 Open your terminal from anywhere on your system and simply type:
 ```bash
