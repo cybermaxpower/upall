@@ -50,6 +50,22 @@ chmod +x install.sh
 ./install.sh
 ```
 
+## 📋 Prerequisites
+
+Before installing upall, make sure `curl` is installed. It is required to download the installer.
+
+If `curl` is missing, install it using your distribution's package manager.
+
+**Debian-based systems:**
+```bash
+sudo apt update
+sudo apt install curl -y
+```
+
+Once installed, proceed with the installation instructions below.
+
+
+
 ## 💻 How to Use upall in the Terminal
 Once installed, using the application is incredibly straightforward. It acts just like a native system command.
 ### Running the App
