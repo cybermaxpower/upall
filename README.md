@@ -77,20 +77,7 @@ Once installed, proceed with the installation instructions below.
 ## 💻 How to Use upall in the Terminal
 Once installed, using the application is incredibly straightforward. It acts just like a native system command.
 
-### Prerequisite: curl
 
-The one-line installation command requires `curl` to download the installer.
-
-If `curl` is not installed on your system, install it first using your distribution's package manager.
-
-**Debian/Ubuntu-based systems:**
-
-```bash
-sudo apt update
-sudo apt install curl -y
-```
-
-Once installed, continue with the installation instructions below.
 
 ### Running the App
 Open your terminal from anywhere on your system and simply type:
