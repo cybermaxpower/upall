@@ -71,15 +71,13 @@ upall
 ---
 
 ## What to Expect When Run:
- * **Screen Refresh:** The script starts by clearing your terminal view for a clprofessionalional workspace.
- * **Privilege Elevation:** You will see the secure password prompt required so your core system package managers can look for updates safely.
- * **Environment Sync:** A banner will output telling you exactly what type of machine it detected (e.g., [DETECTED] Arch-based system).
- * **Sequential Processing:** It runs through your core system updates first, then smoothly moves on to Snaps and Flatpaks *only* if they are active on your computer.
+
+ * **Screen Refresh:** The script clears the terminal screen to provide a clean workspace.
+ A completion message appears when the update process finishes successfully.
  * **Completion Graphic:** A prominent success block drops down at the very end to signal your entire machine is fully updated and secure.
 
 ## 🔒 Why It Asks for Your Password (sudo)
-When the script starts, you will see a standard [sudo] password prompt.
- * **It is completely safe.**
+
  * Your system requires **administrator privileges (sudo)** to safely download, install, and replace core system files.
  * You only need to type your password **once** at the beginning. The script will remember it until all updates are finished.
  
