@@ -7,7 +7,7 @@ set -euo pipefail
 # Description:  Automated universal system updater for Linux. Automatically
 #               detects the OS base (Debian/Ubuntu or Arch) and safely handles
 #               APT, Pacman/AUR, Snap, and Flatpak updates with built-in checks.
-# Author:       Matt Wait (cybermaxpoweer) / https://github.com/cybermaxpower/
+# Author:       Matt Wait (cybermaxpower) / https://github.com/cybermaxpower/
 # License:      MIT License 
 # Version:      1.5.2
 # Date:         2026-11-21
@@ -83,7 +83,7 @@ clear
 # 2. SYSTEM UPDATES
 # ==========================================
 echo -e "╔═════════════════════════════════════════════════════╗"
-echo -e "║        \e[32mStarting Full System Update...\e[0m               ║"
+echo -e "║          \e[32mStarting Full System Update...\e[0m             ║"
 echo -e "╚═════════════════════════════════════════════════════╝"
 echo -e "\n"
 
@@ -98,7 +98,7 @@ if [ "$PKG_MANAGER" = "apt" ]; then
     echo -e "\e[34m[MAINTENANCE]\e[0m Cleaning up orphaned packages and package cache..."
     sudo apt autoremove -y && sudo apt clean
 
-elif command -v pacman &> /dev/null; then
+elif [ "$PKG_MANAGER" = "pacman" ]; then
     echo -e "\e[32m[DETECTED]\e[0m Arch-based system."
     
     if command -v yay &> /dev/null; then
@@ -161,7 +161,7 @@ fi
 # ==========================================
 
 if command -v notify-send &> /dev/null; then
-	notify-send "System Update Complete" "System updates finished successfully!" --icon=system-software-update 2>/dev/null || true
+    notify-send "System Update Complete" "System updates finished successfully!" --icon=system-software-update 2>/dev/null || true
 fi
 
 echo -e "╔═════════════════════════════════════════════════════╗"
