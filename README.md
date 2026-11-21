@@ -1,5 +1,5 @@
 # upall 🚀
-Update everything at once. **upall** automates system package, Flatpak, and Snap updates with a single, clean terminal command.
+Update everything at once. ***upall***  is a simple Linux update utility that brings system packages, Flatpaks and Snaps together under a single command.
 
 <p align="center">
 <img src="screenshot.png" width="600" alt="Script Screenshot">
