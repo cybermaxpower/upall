@@ -49,8 +49,8 @@ Once `curl` is installed, proceed with either installation method below.
 
 Once installed, continue with the installation instructions below.
 
-## 🚀 How to Install Using the Lazy Installer script (Recommended)
-The easiest way to install upall globally on your system is to use the lazy installer script. This will automatically check your OS, install dependencies like `curl` if they are missing, download upall, and make it usable from anywhere.
+## 🚀 How to Install Using the Installer script (Recommended)
+The easiest way to install upall globally on your system is to use the installer script. This will automatically check your OS, install dependencies like `curl` if they are missing, download upall, and make it usable from anywhere.
 ### Option A: The One-Line Express Installation
 Open your terminal and paste this single command to install instantly:
 ```bash
