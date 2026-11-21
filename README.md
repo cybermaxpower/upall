@@ -29,23 +29,21 @@ This script does the remembering for you. It detects the supported package manag
  * **Clean & Beautiful Interface:** Formatted with custom ASCII box boundaries, color coding, and terminal spacing so you can easily track update progress.
  * **Desktop Notification:** Sends a completion notification if `notify-send` is available.
 
-## 📋 Prerequisites
 
-`curl` is required to download the upall installer. If it is not already installed, install it using your distribution's package manager.
+📋 Prerequisites
 
-**Debian/Ubuntu-based systems:**
-```bash
+"curl" is required to download the upall installer. If it is not already installed on your system, install it using your distribution's package manager.
+
+Debian/Ubuntu-based systems:
+
 sudo apt update
 sudo apt install curl -y
-```
 
-**Arch-based systems:**
-```bash
+Arch-based systems:
+
 sudo pacman -S curl
-```
 
-
-Once installed, continue with the installation instructions below.
+Once "curl" is installed, continue with the installation instructions below.
 
 ## 🚀 How to Install Using the Installer script (Recommended)
 The easiest way to install upall globally on your system is to use the installer script. This will automatically check your OS, install dependencies like `curl` if they are missing, download upall, and make it usable from anywhere.
