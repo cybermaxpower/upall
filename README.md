@@ -31,15 +31,17 @@ This script does the remembering for you. It detects the supported package manag
 
 ## 📋 Prerequisites
 
-`curl` is required for both installation methods to download the installer from GitHub.
+`curl` is required to download the upall installer. If it is not already installed, install it using your distribution's package manager.
 
-If `curl` is not already installed, install it using your distribution's package manager.
-
-**Debian-based systems:**
-
+**Debian/Ubuntu-based systems:**
 ```bash
 sudo apt update
 sudo apt install curl -y
+```
+
+**Arch-based systems:**
+```bash
+sudo pacman -S curl
 ```
 
 Once `curl` is installed, proceed with either installation method below.
