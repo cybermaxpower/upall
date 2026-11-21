@@ -44,8 +44,6 @@ sudo apt install curl -y
 sudo pacman -S curl
 ```
 
-Once `curl` is installed, proceed with either installation method below.
-
 
 Once installed, continue with the installation instructions below.
 
