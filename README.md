@@ -1,5 +1,5 @@
 # upall 🚀
-Update everything at once. ***upall***  is a simple Linux update utility that brings system packages, Flatpaks and Snaps together under a single command.
+Update everything at once. ***upall*** is a simple Linux update utility that brings system packages, Flatpaks, and Snaps together under a single command.
 
 <p align="center">
 <img src="screenshot.png" width="600" alt="Script Screenshot">
@@ -15,7 +15,7 @@ Updating system packages, Flatpaks, and Snaps one by one is repetitive. upall fi
 ## 💡 Why This Project Exists
 I created **upall** because keeping a modern Linux system updated can be annoying.
 Today, a single computer often uses **different package ecosystems** at the same time. To fully update your system, you usually have to remember and type several separate commands:
- * `sudo apt update && sudo apt full-upgrade` (for system packages)
+ * `sudo apt update && sudo apt upgrade` (for system packages on Debian/Ubuntu)
  * `sudo snap refresh` (for Snap applications)
  * `flatpak update` (for Flatpak applications)
 I wanted a **single, universal command** that could handle everything for me.
@@ -26,9 +26,8 @@ This script does the remembering for you. It detects the supported package manag
  * **AUR Helper Support:** If you are on an Arch-based system, it dynamically detects and utilizes `yay` or `paru` to update your Arch User Repository packages automatically.
  * **Optional Package Manager Detection:** Checks whether Snap or Flatpak are installed before running their update commands. Snap updates are also skipped unless the `snapd` service is active.
  * **Package Manager Lock Check:** Checks for package-manager locks and retries while waiting for them to clear, before timing out.
+ * **Flexible CLI Flags:** Supports standalone cleanup, combined update-and-clean runs, full APT upgrades, version/help/about flags, and desktop notifications when `notify-send` is available.
  * **Clean & Beautiful Interface:** Formatted with custom ASCII box boundaries, color coding, and terminal spacing so you can easily track update progress.
- * **Desktop Notification:** Sends a completion notification if `notify-send` is available.
-
 
 📋 Prerequisites
 
@@ -50,14 +49,14 @@ The easiest way to install upall globally on your system is to use the installer
 ### Option A: The One-Line Express Installation
 Open your terminal and paste this single command to install instantly:
 ```bash
-curl -sL https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh | bash
+curl -sL [https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh](https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh) | bash
 ```
 
 ### Option B: Manual Step-by-Step Installation
 If you prefer to download the installer file first, run these commands:
 ```bash
 # 1. Download the installer script
-curl -O https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh
+curl -O [https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh](https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh)
 
 # 2. Make the installer executable
 chmod +x install.sh
@@ -68,17 +67,24 @@ chmod +x install.sh
 
 Once installed, proceed with the installation instructions below.
 
-
-
 ## 💻 How to Use upall in the Terminal
 Once installed, using the application is incredibly straightforward. It acts just like a native system command.
-
-
 
 ### Running the App
 Open your terminal from anywhere on your system and simply type:
 ```bash
 upall
+```
+
+### Command-Line Options
+```text
+-h, --help          Show this help message and exit
+-v, --version       Show version number and exit
+-a, --about         Show author, license, and repository details
+-f, --full          Use 'apt full-upgrade -y' on Debian/Ubuntu (no effect on Arch)
+-c, --clean         Clean APT orphans/cache (or paccache on Arch) and unused Flatpaks
+-u, --clean-update  Run updates first, then clean up old packages
+    --full-clean    Perform a full APT upgrade followed by cleanup
 ```
 
 ---
@@ -111,4 +117,4 @@ This software is provided completely **"as is"** without any warranty of any kin
 
 ### Limitation of Liability
 * **Use at Your Own Risk:** The developer is not liable for any system instability, package conflicts, data loss, or system issues that may occur on your computer from installing, running, or updating software using this tool.
-* **User Responsibility:** Automatic cleanups (such as removing unused Flatpak runtimes) can modify local configurations or environment setups linked to those packages. It is your absolute responsibility to inspect the script, review what is being changed or deleted, and maintain your own system backups before executing updates.
+* **User Responsibility:** Package cleanups (such as APT `autoremove`/`clean`, `paccache -r` on Arch when `pacman-contrib` is installed, or removing unused Flatpak runtimes) can modify installed packages, caches, or local environment setups. It is your absolute responsibility to inspect the script, review what is being changed or deleted, and maintain your own system backups before executing updates.
