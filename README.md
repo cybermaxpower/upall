@@ -29,19 +29,19 @@ This script does the remembering for you. It detects the supported package manag
  * **Flexible CLI Flags:** Supports standalone cleanup, combined update-and-clean runs, full APT upgrades, version/help/about flags, and desktop notifications when `notify-send` is available.
  * **Clean & Beautiful Interface:** Formatted with custom ASCII box boundaries, color coding, and terminal spacing so you can easily track update progress.
 
-📋 Prerequisites
+## 📋 Prerequisites
 
 "curl" is required to download the upall installer. If it is not already installed on your system, install it using your distribution's package manager.
 
 Debian/Ubuntu-based systems:
-
+```bash
 sudo apt update
 sudo apt install curl -y
-
+```
 Arch-based systems:
-
+```bash
 sudo pacman -S curl
-
+```
 Once "curl" is installed, continue with the installation instructions below.
 
 ## 🚀 How to Install Using the Installer script (Recommended)
