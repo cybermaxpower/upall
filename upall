@@ -1,26 +1,121 @@
-sudo tee /usr/local/bin/upall > /dev/null << 'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 
 # ==============================================================================
 # Script Name:  upall
 # Description:  Automated universal system updater for Linux. Automatically
-#               detects the OS base (Debian/Ubuntu or Arch) and safely handles
-#               APT, Pacman/AUR, Snap, and Flatpak updates with built-in checks.
-# Author:       Matt Wait (cybermaxpower) / https://github.com/cybermaxpower/
-# License:      MIT License 
-# Version:      1.5.2
-# Date:         2026-11-21
+#               detects the OS base (Debian/Ubuntu or Arch) via /etc/os-release
+#               and safely handles APT, Pacman/AUR, Snap, and Flatpak updates.
+# Author:       M. Wait (cybermaxpower) / https://github.com/cybermaxpower/upall
+# License:      MIT License
+# Version:      1.6.7
+# Date:         2026-11-22
 # ==============================================================================
 
-# Clear the screen for a clean start
-clear 
+VERSION="1.6.7"
+FULL_UPGRADE=0
+CLEAN_ONLY=0
+DO_CLEAN=0
+CLEAN_UPDATE=0
+FULL_CLEAN=0
 
-# Cache sudo credentials upfront and keep them alive in the background
-# This ensures long updates don't timeout and halt the script mid-way.
-echo -e "\e[34m[INIT]\e[0m Requesting administrative privileges..."
-sudo -v
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+# ==========================================
+# 0. PARSE COMMAND-LINE ARGUMENTS
+# ==========================================
+while (( $# > 0 )); do
+    case "$1" in
+        -v|--version)
+            echo "upall version $VERSION"
+            exit 0
+            ;;
+        -h|--help)
+            cat << 'HELP'
+Usage: upall [OPTION]
+
+Automated universal system updater for Debian/Ubuntu and Arch-based Linux.
+
+Options:
+  -h, --help          Show this help message and exit
+  -v, --version       Show version number and exit
+  -a, --about         Show author, license, and repository details
+  -f, --full          Use 'apt full-upgrade -y' on Debian/Ubuntu (no effect on Arch)
+  -c, --clean         Clean APT orphans/cache (or paccache on Arch) and unused Flatpaks
+  -u, --clean-update  Run updates first, then clean up old packages
+      --full-clean    Perform a full APT upgrade followed by cleanup
+HELP
+            exit 0
+            ;;
+        -a|--about)
+            cat << 'ABOUT'
+upall - Universal Linux System Updater
+Author:  M. Wait (cybermaxpower)
+GitHub:  https://github.com/cybermaxpower/upall
+License: MIT License
+ABOUT
+            exit 0
+            ;;
+        -f|--full)
+            FULL_UPGRADE=1
+            ;;
+        -c|--clean)
+            DO_CLEAN=1
+            ;;
+        -u|--clean-update)
+            CLEAN_UPDATE=1
+            DO_CLEAN=1
+            ;;
+        --full-clean)
+            FULL_CLEAN=1
+            FULL_UPGRADE=1
+            DO_CLEAN=1
+            ;;
+        *)
+            echo -e "\e[31m[ERROR]\e[0m Unknown option: $1"
+            echo "Try 'upall --help' for more information."
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+# If --clean was passed on its own, run cleanup only
+if (( DO_CLEAN == 1 && FULL_UPGRADE == 0 && CLEAN_UPDATE == 0 )); then
+    CLEAN_ONLY=1
+fi
+
+# ==========================================
+# 1. DETECT OPERATING SYSTEM / PACKAGER
+# ==========================================
+DISTRO_NAME="Linux"
+PKG_MANAGER=""
+
+if [[ -r /etc/os-release ]]; then
+    DISTRO_NAME=$(. /etc/os-release && echo "${PRETTY_NAME:-${NAME:-Linux}}")
+    OS_ID=$(. /etc/os-release && echo "${ID:-}")
+    OS_LIKE=$(. /etc/os-release && echo "${ID_LIKE:-}")
+
+    case " $OS_ID $OS_LIKE " in
+        *" debian "*|*" ubuntu "*)
+            PKG_MANAGER="apt"
+            ;;
+        *" arch "*|*" manjaro "*)
+            PKG_MANAGER="pacman"
+            ;;
+    esac
+fi
+
+# Fallback to binary detection if /etc/os-release didn't match a known family
+if [[ -z "$PKG_MANAGER" ]]; then
+    if command -v apt >/dev/null 2>&1; then
+        PKG_MANAGER="apt"
+    elif command -v pacman >/dev/null 2>&1; then
+        PKG_MANAGER="pacman"
+    else
+        echo -e "\e[31m[CRITICAL ERROR]\e[0m No supported package manager found for $DISTRO_NAME."
+        echo -e "This script is not compatible with your operating system. Exiting safely."
+        exit 1
+    fi
+fi
 
 # ==========================================
 # LOCK CHECK FUNCTION
@@ -34,21 +129,17 @@ wait_for_lock() {
     while (( attempt <= max_attempts )); do
         lock_detected=0
 
-        # Check APT locks on Debian/Ubuntu
-        if command -v apt >/dev/null 2>&1; then
+        if [[ "$PKG_MANAGER" == "apt" ]]; then
             if sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || \
                sudo fuser /var/lib/apt/lists/lock >/dev/null 2>&1; then
                 lock_detected=1
             fi
-
-        # Check Pacman lock on Arch
-        elif command -v pacman >/dev/null 2>&1; then
+        elif [[ "$PKG_MANAGER" == "pacman" ]]; then
             if [[ -f /var/lib/pacman/db.lck ]]; then
                 lock_detected=1
             fi
         fi
 
-        # If no lock is found, proceed
         if (( lock_detected == 0 )); then
             return 0
         fi
@@ -64,108 +155,148 @@ wait_for_lock() {
 }
 
 # ==========================================
-# 1. DETECT OPERATING SYSTEM / PACKAGER
+# 2. PRIVILEGE ELEVATION & SCREEN INIT
 # ==========================================
-if command -v apt &> /dev/null; then
-    PKG_MANAGER="apt"
-elif command -v pacman &> /dev/null; then
-    PKG_MANAGER="pacman"
-else
-    echo -e "\e[31m[CRITICAL ERROR]\e[0m No supported package manager (APT or Pacman) found."
-    echo -e "This script is not compatible with your operating system. Exiting safely."
-    exit 1
-fi
+clear
 
-# Clear the screen  
-clear 
+echo -e "\e[34m[INIT]\e[0m Requesting administrative privileges..."
+sudo -v
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+clear
 
 # ==========================================
-# 2. SYSTEM UPDATES
+# 3. SYSTEM UPDATES / CLEANUP
 # ==========================================
 echo -e "╔═════════════════════════════════════════════════════╗"
-echo -e "║          \e[32mStarting Full System Update...\e[0m             ║"
+if (( CLEAN_ONLY == 1 )); then
+    echo -e "║               \e[34mStarting System Cleanup...\e[0m            ║"
+elif (( FULL_CLEAN == 1 )); then
+    echo -e "║         \e[32mStarting Full Upgrade & Cleanup...\e[0m          ║"
+elif (( CLEAN_UPDATE == 1 )); then
+    echo -e "║          \e[32mStarting Update & Cleanup...\e[0m              ║"
+else
+    echo -e "║          \e[32mStarting Full System Update...\e[0m             ║"
+fi
 echo -e "╚═════════════════════════════════════════════════════╝"
 echo -e "\n"
 
-# Check if another update tool is running before starting
+echo -e "\e[32m[DETECTED]\e[0m $DISTRO_NAME ($PKG_MANAGER)"
+
 wait_for_lock
 
-if [ "$PKG_MANAGER" = "apt" ]; then
-    echo -e "\e[32m[DETECTED]\e[0m Debian/Ubuntu-based system."
-    sudo apt update && sudo apt full-upgrade -y
-    
-    # APT Housekeeping
-    echo -e "\e[34m[MAINTENANCE]\e[0m Cleaning up orphaned packages and package cache..."
-    sudo apt autoremove -y && sudo apt clean
+if [[ "$PKG_MANAGER" == "apt" ]]; then
+    if (( CLEAN_ONLY == 0 )); then
+        if (( FULL_UPGRADE == 1 )); then
+            echo -e "\e[33m[MODE]\e[0m Running full distribution upgrade (apt full-upgrade)..."
+            sudo apt update && sudo apt full-upgrade -y
+        else
+            sudo apt update && sudo apt upgrade -y
+        fi
+    fi
 
-elif [ "$PKG_MANAGER" = "pacman" ]; then
-    echo -e "\e[32m[DETECTED]\e[0m Arch-based system."
-    
-    if command -v yay &> /dev/null; then
-        echo -e "\e[34m[AUR]\e[0m Updating with yay..."
-        yay -Syu --noconfirm --noeditmenu --nodiffmenu
-    elif command -v paru &> /dev/null; then
-        echo -e "\e[34m[AUR]\e[0m Updating with paru..."
-        paru -Syu --noconfirm --fm=no
-    else
-        sudo pacman -Syu --noconfirm
+    if (( DO_CLEAN == 1 )); then
+        echo -e "\e[34m[MAINTENANCE]\e[0m Cleaning up orphaned APT packages and package cache..."
+        sudo apt autoremove -y && sudo apt clean
+    fi
+
+elif [[ "$PKG_MANAGER" == "pacman" ]]; then
+    if (( CLEAN_ONLY == 0 )); then
+        if command -v yay >/dev/null 2>&1; then
+            echo -e "\e[34m[AUR]\e[0m Updating with yay..."
+            yay -Syu --noconfirm --answerdiff None --answeredit None
+        elif command -v paru >/dev/null 2>&1; then
+            echo -e "\e[34m[AUR]\e[0m Updating with paru..."
+            paru -Syu --noconfirm --fm=no
+        else
+            sudo pacman -Syu --noconfirm
+        fi
+    fi
+
+    if (( DO_CLEAN == 1 )); then
+        if command -v paccache >/dev/null 2>&1; then
+            echo -e "\e[34m[MAINTENANCE]\e[0m Trimming old Pacman package cache with paccache..."
+            sudo paccache -r || echo -e "\e[33m[WARN]\e[0m paccache encountered an issue."
+        else
+            echo -e "\e[33m[WARN]\e[0m 'paccache' not found (install pacman-contrib for gentle cache cleanup)."
+        fi
     fi
 fi
 
 echo -e "\n"
 
 # ==========================================
-# 3. SNAP UPDATES (Conditional & Silent)
+# 4. SNAP UPDATES (Conditional & Silent)
 # ==========================================
-if command -v snap &> /dev/null && systemctl is-active --quiet snapd; then
+if (( CLEAN_ONLY == 0 )) && command -v snap >/dev/null 2>&1 && systemctl is-active --quiet snapd; then
     echo -e "╔═════════════════════════════════════════════════════╗"
     echo -e "║                 \e[34mRefreshing Snaps...\e[0m                 ║"
     echo -e "╚═════════════════════════════════════════════════════╝"
     echo -e "\n"
-    
+
     sudo snap refresh
     echo -e "\n"
 fi
 
-
 # ==========================================
-# 4. FLATPAK UPDATES (Conditional)
+# 5. FLATPAK UPDATES & CLEANUP (Conditional)
 # ==========================================
-if command -v flatpak &> /dev/null; then
+if command -v flatpak >/dev/null 2>&1; then
     echo -e "╔═════════════════════════════════════════════════════╗"
-    echo -e "║                \e[35mUpdating Flatpaks...\e[0m                 ║"
+    if (( CLEAN_ONLY == 1 )); then
+        echo -e "║               \e[35mCleaning Unused Flatpaks...\e[0m           ║"
+    else
+        echo -e "║                \e[35mUpdating Flatpaks...\e[0m                 ║"
+    fi
     echo -e "╚═════════════════════════════════════════════════════╝"
     echo -e "\n"
 
-    # Updates all Flatpaks, filtering unwanted informational messages.
-    set +e
-    flatpak update -y 2>&1 | col -b | grep -vE "end-of-life|receiving fixes|applications using|extension:|recommend moving"
-    pipeline_status=("${PIPESTATUS[@]}")
-    set -e
+    if (( CLEAN_ONLY == 0 )); then
+        # Updates all Flatpaks, filtering unwanted informational messages.
+        set +e
+        if command -v col >/dev/null 2>&1; then
+            flatpak update -y 2>&1 | col -b | grep -vE "end-of-life|receiving fixes|applications using|extension:|recommend moving"
+        else
+            flatpak update -y 2>&1 | grep -vE "end-of-life|receiving fixes|applications using|extension:|recommend moving"
+        fi
+        pipeline_status=("${PIPESTATUS[@]}")
+        set -e
 
-    # Check whether Flatpak itself failed.
-    if [[ ${pipeline_status[0]} -ne 0 ]]; then
-        echo -e "\e[31m[ERROR]\e[0m Flatpak updates failed!"
-        exit 1
+        # Check whether Flatpak itself failed.
+        if [[ ${pipeline_status[0]} -ne 0 ]]; then
+            echo -e "\e[31m[ERROR]\e[0m Flatpak updates failed!"
+            exit 1
+        fi
     fi
 
-    # Automatically removes unused Flatpak runtimes and libraries.
-    flatpak uninstall --unused -y > /dev/null 2>&1 || true
+    if (( DO_CLEAN == 1 )); then
+        echo -e "\e[34m[MAINTENANCE]\e[0m Removing unused Flatpak runtimes and libraries..."
+        flatpak uninstall --unused -y || echo -e "\e[33m[WARN]\e[0m Flatpak cleanup skipped or encountered an issue."
+    fi
 
     echo -e "\n"
 fi
 
-
 # ==========================================
-# 5. FINISH
+# 6. FINISH
 # ==========================================
-
-if command -v notify-send &> /dev/null; then
-    notify-send "System Update Complete" "System updates finished successfully!" --icon=system-software-update 2>/dev/null || true
+if command -v notify-send >/dev/null 2>&1; then
+    if (( CLEAN_ONLY == 1 )); then
+        notify-send "System Cleanup Complete" "Package cleanup finished successfully!" --icon=system-software-update 2>/dev/null || true
+    else
+        notify-send "System Update Complete" "System updates finished successfully!" --icon=system-software-update 2>/dev/null || true
+    fi
 fi
 
 echo -e "╔═════════════════════════════════════════════════════╗"
-echo -e "║               \e[32mALL UPDATES COMPLETE!\e[0m                 ║"
+if (( CLEAN_ONLY == 1 )); then
+    echo -e "║              \e[32mSYSTEM CLEANUP COMPLETE!\e[0m               ║"
+elif (( FULL_CLEAN == 1 )); then
+    echo -e "║          \e[32mFULL UPGRADE & CLEANUP COMPLETE!\e[0m           ║"
+elif (( CLEAN_UPDATE == 1 )); then
+    echo -e "║            \e[32mUPDATE & CLEANUP COMPLETE!\e[0m               ║"
+else
+    echo -e "║               \e[32mALL UPDATES COMPLETE!\e[0m                 ║"
+fi
 echo -e "╚═════════════════════════════════════════════════════╝"
 echo -e "\n"
-EOF
