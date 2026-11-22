@@ -78,6 +78,11 @@ ABOUT
     shift
 done
 
+# Derive combined modes so --full --clean and --full --clean-update match --full-clean
+if (( FULL_UPGRADE == 1 && DO_CLEAN == 1 )); then
+    FULL_CLEAN=1
+fi
+
 # If --clean was passed on its own, run cleanup only
 if (( DO_CLEAN == 1 && FULL_UPGRADE == 0 && CLEAN_UPDATE == 0 )); then
     CLEAN_ONLY=1
