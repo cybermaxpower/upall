@@ -49,14 +49,14 @@ The easiest way to install upall globally on your system is to use the installer
 ### Option A: The One-Line Express Installation
 Open your terminal and paste this single command to install instantly:
 ```bash
-curl -sL [https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh](https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh) | bash
+curl -L "https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh" | bash
 ```
 
 ### Option B: Manual Step-by-Step Installation
 If you prefer to download the installer file first, run these commands:
 ```bash
 # 1. Download the installer script
-curl -O [https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh](https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh)
+curl -L -o install.sh "https://raw.githubusercontent.com/cybermaxpower/upall/main/install.sh"
 
 # 2. Make the installer executable
 chmod +x install.sh
